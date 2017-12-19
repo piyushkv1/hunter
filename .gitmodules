@@ -1,0 +1,3 @@
+[submodule "nsx-integration-for-openshift"]
+	path = nsx-integration-for-openshift
+	url = https://github.com/vmware/nsx-integration-for-openshift.git

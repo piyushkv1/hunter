@@ -1,0 +1,24 @@
+# Temporary files from editing
+*~
+.*.sw[po]
+*.bk
+
+# Python compilation
+*.py[co]
+*.egg
+
+# erlang compilation
+*.beam
+*.app
+# rebar
+.rebar
+deps
+
+# IDEA Project, Eclipse
+.idea/
+
+# SASS
+*.css.map
+
+# Local customization files
+
