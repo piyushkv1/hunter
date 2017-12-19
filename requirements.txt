@@ -1,2 +1,3 @@
 kazoo
 prettytable
+requests
