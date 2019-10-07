@@ -4,3 +4,15 @@
 [submodule "pyvmomi"]
 	path = pyvmomi
 	url = https://github.com/vmware/pyvmomi.git
+[submodule "docker-py"]
+	path = docker-py
+	url = https://github.com/docker/docker-py.git
+[submodule "openshift-ansible"]
+	path = openshift-ansible
+	url = https://github.com/openshift/openshift-ansible.git
+[submodule "pyvmomi-community-samples"]
+	path = pyvmomi-community-samples
+	url = https://github.com/vmware/pyvmomi-community-samples.git
+[submodule  "vsphere-automation-sdk-python"]
+	path = vsphere-automation-sdk-python
+	url = https://github.com/vmware/vsphere-automation-sdk-python.git

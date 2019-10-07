@@ -1,0 +1,24 @@
+#!/bin/sh
+
+echo "Generating .http_cert_pw"
+echo "secureall-em" > ".http_cert_pw"
+# Create the API server certificate if not present
+if [ ! -f "/home/secureall/secureall/.store/.bluelane_keystore" ]; then
+echo "Creating API server certificate"
+CN_VAM="NSX Appliance Manager"
+CN="nsx-manager"
+OU=NSX
+O="VMware Inc."
+L="Palo Alto"
+ST=CA
+C=US
+KEYSTORE_LOC="/home/secureall/secureall/.store"
+BLULANE_KEYSTORE_FILE="${KEYSTORE_LOC}/.bluelane_keystore"
+HTTP_CERT_PWD_FILE=".http_cert_pw"
+HTTP_CERT_PW=`cat $HTTP_CERT_PWD_FILE`
+keytool -noprompt -genkeypair -alias tomcat -keyalg RSA -keysize 2048 -storepass $HTTP_CERT_PW -keypass $HTTP_CERT_PW -keystore $BLULANE_KEYSTORE_FILE -dname "CN=$CN, OU=$OU, O=$O, L=$L, ST=$ST, C=$C" -validity 3650
+keytool -noprompt -genkeypair -alias csmcert -keyalg RSA -keysize 2048 -storepass $HTTP_CERT_PW -keypass $HTTP_CERT_PW -keystore $BLULANE_KEYSTORE_FILE -dname "CN=$CN, OU=$OU, O=$O, L=$L, ST=$ST, C=$C" -validity 3650
+fi
+
+
+keytool -noprompt -genkeypair -alias nsxmanager -keyalg RSA -keysize 2048 -storepass $HTTP_CERT_PW -keypass $HTTP_CERT_PW -keystore $BLULANE_KEYSTORE_FILE -dname "CN=$CN, OU=$OU, O=$O, L=$L, ST=$ST, C=$C" -validity 3650

@@ -1,3 +1,6 @@
+import sys; print('Python %s on %s' % (sys.version, sys.platform))
+sys.path.extend(['/Users/piyushv/hunter', '/Users/piyushv/hunter/pyvmomi', '/Users/piyushv/hunter/nsx-integration-for-openshift'])
+
 from nsx.nsx2 import NSXManager
 import argparse
 from prettytable import PrettyTable
@@ -56,7 +59,7 @@ def getargs():
                         help="VM to list vif ids")
     supported_operations = ["logicalswitches", "logicalports", "vifs",
                             "setparent", "createcifport", "updatecifport",
-                            "deletelsport"]
+                            "deletelsport", "openshiftconfiguration"]
     parser.add_argument("operation",
                         metavar="operation",
                         choices=supported_operations,
@@ -160,6 +163,35 @@ def updatecifport(args):
 def deletelsport(args):
     client = NSXManager(ip=args.ip)
     client.delete_lsport(port_id=args.port_id)
+
+
+def openshiftconfiguration(args):
+    client = NSXManager(ip=args.ip)
+    tz_name = "os-tz"
+    edge_cluster = "os-edge-cluster"
+    t0_router = "os-router-t0"
+    pod_ip_block = "os-pod-ip-block"
+    snat_ip_block = "os-snat-ip-block"
+    #tz_id = client.create_tz(tz_name, "nsx")
+    # edge_cluster_id = client.create_edge_cluster(edge_cluster)
+    # t0_router_id = client.create_router(t0_router, edge_cluster_id, "TIER0")
+    # pod_ip_block_id = client.create_ipblock(pod_ip_block, "10.15.1.0/24")
+    # snat_ip_block_id = client.create_ipblock(snat_ip_block, "192.168.1.0/24")
+    py_dict = {
+        "tags": [
+            {
+                "scope": "ncp/cluster",
+                "tag": "os_cluster"
+            }
+        ]
+    }
+    tz_id = "0c07493f-445b-4b47-af3b-1818206ce2f7"
+    client.update_tz(tz_id, py_dict)
+    # return {'tz_id': tz_id,
+    #         'edge_cluster_id': edge_cluster_id,
+    #         't0_router_id': t0_router_id,
+    #         'pod_ip_block_id': pod_ip_block_id,
+    #         'snat_ip_block_id': snat_ip_block_id}
 
 
 if __name__ == '__main__':

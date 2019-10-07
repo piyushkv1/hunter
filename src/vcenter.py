@@ -1,5 +1,7 @@
+import sys; print('Python %s on %s' % (sys.version, sys.platform))
+sys.path.extend(['/Users/piyushv/hunter', '/Users/piyushv/hunter/pyvmomi'])
+
 import argparse
-from prettytable import PrettyTable
 import logging
 import sys
 from vsphere.vc import VCenter
@@ -40,7 +42,7 @@ def createlinkedclone(args):
         raise ValueError("Param: vm is not defined")
     vc = VCenter(ip=args.ip)
     vm = vc.get_vm(args.vm)
-    vc.create_linkedclone(vm=vm, new_vm="test")
+    vc.create_linkedclone(vm=vm, new_vm="os_node2")
 
 
 if __name__ == '__main__':

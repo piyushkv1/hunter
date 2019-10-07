@@ -1,3 +1,5 @@
 kazoo
 prettytable
 requests
+paramiko
+ansible

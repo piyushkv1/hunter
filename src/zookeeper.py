@@ -17,10 +17,10 @@ def getargs():
 
 if __name__ == '__main__':
     args = getargs()
-    print args.ip
     zk = KazooClient(hosts='%s:%s' % (args.ip, args.port))
     zk.start()
     import pdb; pdb.set_trace()
     data = zk.get("/testbed/launcher/0/obj")
-    new_data = data[0].replace('10.112.199.190', '127.0.0.1')
+    children = zk.get('/testbed')
+    new_data = data[0].replace('10.116.246.231', '127.0.0.1')
     zk.set("/testbed/launcher/0/obj", new_data)

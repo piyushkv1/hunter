@@ -107,3 +107,81 @@ class NSXManager(object):
     def delete_lsport(self, port_id=str):
         url = "/logical-ports"
         self.client.delete(url, port_id, params={"detach":"true"})
+
+    def create_tz(self, name=str, switch_name=str):
+        url = "/transport-zones"
+        py_dict = {
+            "display_name": name,
+            "host_switch_name": switch_name,
+            "transport_type": "OVERLAY"
+        }
+        return self.client.create(url, py_dict)['id']
+
+    def update_tz(self, tz_id=str, my_dict=dict):
+        url = "/transport-zones"
+        py_dict = self.client.read(url, tz_id)
+        for k, v in my_dict.iteritems():
+            py_dict[k] = v
+        return self.client.update(url, tz_id, py_dict)
+
+    def delete_tz(self, tz_id=str):
+        url = "/transport-zones"
+        self.client.delete(url, tz_id)
+
+    def create_edge_cluster(self, name=str, tn_ids=None):
+        url = "/edge-clusters"
+        py_dict = {
+            "display_name": name,
+            "resource_type": "EdgeCluster",
+            "members": []
+        }
+        if tn_ids and type(tn_ids) is list:
+            for tn_id in tn_ids:
+                member = {"transport_node_id": tn_id}
+                py_dict["members"].append(member)
+        return self.client.create(url, py_dict)['id']
+
+    def delete_edge_cluster(self, edge_cluster_id=str):
+        url = "/edge-clusters"
+        self.client.delete(url, edge_cluster_id)
+
+    def create_router(self, name=str, edge_cluster_id=str, type="TIER1"):
+        url = "/logical-routers"
+        py_dict = {
+            "resource_type": "LogicalRouter",
+            "display_name": name,
+            "edge_cluster_id": edge_cluster_id,
+            "router_type": type,
+            "high_availability_mode": "ACTIVE_STANDBY"
+        }
+        return self.client.create(url, py_dict)['id']
+
+    def delete_router(self, router_id):
+        url = "/logical-routers"
+        self.client.delete(url, router_id)
+
+    def create_ls(self, name=str, tz_id=str):
+        url = "/logical-switches"
+        py_dict = {
+            "transport_zone_id": tz_id,
+            "replication_mode": "MTEP",
+            "admin_state": "UP",
+            "display_name": name
+        }
+        return self.client.create(url, py_dict)['id']
+
+    def delete_ls(self, ls_id=str):
+        url = "/logical-switches"
+        self.client.delete(url, ls_id)
+
+    def create_ipblock(self, name=str, cidr=str):
+        url = "/pools/ip-blocks"
+        py_dict = {
+            "display_name": name,
+            "cidr": cidr
+        }
+        return self.client.create(url, py_dict)['id']
+
+    def delete_ipblock(self, ipblock_id=str):
+        url = "/pools/ip-blocks"
+        self.client.delete(url, ipblock_id)
