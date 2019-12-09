@@ -21,11 +21,11 @@ def run_command(ip, cmd):
 
 
 if __name__ == '__main__':
-    ns_name = "test"
-    ip = "10.116.248.199"
+    ns_name = "ns-10"
+    ip = "10.144.137.96"
     cmd = f"oc get pods -o json -n {ns_name}"
     output = run_command(ip, cmd)[1]
-    pods = json.loads(output)['items']
+    pods = json.loads(output)['items'][:3]
     running_pods = list()
     for _pod in pods:
         if _pod['status']['phase'] == 'Running':
@@ -40,5 +40,4 @@ if __name__ == '__main__':
     results = [_r.result() for _r in results]
     rcs = [_r[0] for _r in results]
     print(rcs)
-    import pdb; pdb.set_trace()
 
