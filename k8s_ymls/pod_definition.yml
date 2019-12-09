@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx2
+  labels:
+    app: nginx
+    type: front-end
+spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: IfNotPresent
+    name: nginx
+    # --- Overried ENTRYPOINT and CMD of docker image ---
+    command: ["sleep"]
+    args: ["10"]
+    # --- Mount volume in container ---
+    # This works along with volume defined
+    volumeMount:
+    - mountPath: /opt
+      name: data-volume # name of volume
+    # --- Set environment variable ---
+    env:
+      key: APP_COLOR
+      value: pink
+      # or
+      valueFrom:
+        configMapKeyRef:
+        # or
+        secretKeyRef:
+    # Or
+    envFrom:
+      configMapRef:
+        name: app-config-map
+      - secretRef:
+          name: app-config
+    # --- Resources Requirement ---
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 1
+      limits:
+        memory: 2Gi
+        cpu: 2
+  # --- Scheduler Name --
+  schedulerName: my-custom-scheduler
+  # ----- toleration -----
+  # For this node taint is required
+  # kubectl taint nodes node1 key=value:NoSchedule
+  tolerations:
+    - key: <key>
+      operator: Equal/Exists
+      value: <value> # Optional in case of Exists
+      effect: NoSchedule/PreferNoSchedule/NoExecute
+      tolerationSeconds: 3600 # Specific use with NoExecute
+  # ----- node selector ----
+  # For this node should be labeled with key=value
+  # Limitation: Can't have multiple condition AND, OR, NOT
+  # Above limitation is solved in node affinity and anti affinity
+  nodeSelector:
+    key: value
+  affinity:
+    # --- node affinity ---
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution: # Hard
+        nodeSelectorTerms:
+        - matchExpression:
+          - key: kubernetes.io/e2e-az-name
+            operator: In
+            values:
+              - e2e-az1
+              - e2e-az2
+      preferDuringSchedulingIgnoreDuringExecution: # Soft
+      - weight: 1
+        preference:
+          matchExpression:
+          - key: another-node-lebel-key
+            operator: In
+            values:
+              - another-node-label-value
+      requiredDuringSchedulingRequiredDuringExecution: # In development phase
+  # --- Persistent storage volume --
+  # This will create a new volume
+  volume:
+  - name: data-volume
+    hostPath: # Not recommended for multiple node cluster
+      path: /data
+      type: Directory
+  # or
+  - name: pv-storage
+    persistentVolumeClaim:
+      claimName: pv-claim # This is persistent volume claim
